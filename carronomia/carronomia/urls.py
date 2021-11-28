@@ -9,8 +9,7 @@ from . import views, settings
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', views.home, name='home'),
     path('<str:busqueda>/', views.scrape, name='scrape'),
-    path('<str:busqueda>/promedio/', views.promedio, name='promedio'),
+    path('<str:busqueda>/stats/', views.stats, name='promedio'),
 
 ]

@@ -1,3 +1,5 @@
+import json
+
 from django.core import serializers
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -11,11 +13,21 @@ def scrape(request, busqueda):
     return HttpResponse(carros_dto, 'application/json')
 
 
-def promedio(request, busqueda):
+def stats(request, busqueda):
     carros = utils.scrape(busqueda)
-    promedio = utils.promedioPreciosAnual(carros)
-    return HttpResponse(promedio, 'application/json')
+    years, promedios = utils.promedioPreciosAnual(carros)
+    localidades, numero = utils.carrosPorLocalidad(carros)
+    respuesta = {
+        'promedioAnual': {
+            'years': years,
+            'promedios': promedios,
+        },
+        'numeroPorLocalidad': {
+            'localidad': localidades,
+            'numero': numero
+        }
+
+    }
+    return HttpResponse(json.dumps(respuesta, indent=4), 'application/json')
 
 
-def home(request):
-    return render(request, 'index.html')

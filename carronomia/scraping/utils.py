@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup
 from carros.models import Carro
 import requests
-import matplotlib.pyplot as plt, mpld3
-
+import matplotlib.pyplot as plt
+from collections import OrderedDict
 
 
 def scrape(busqueda):
@@ -36,11 +36,25 @@ def scrape(busqueda):
 def promedioPreciosAnual(carros):
     carros.sort(key=lambda x: x.year, reverse=False)
     years = [int(carro.year) for carro in carros]
-    precio = [int(carro.precio) for carro in carros]
-    plt.plot(years, precio, 'o-')
-    plt.gcf().autofmt_xdate()
-    plt.title('Precios de los carros por año')
-    plt.xlabel('Años')
-    plt.ylabel('Precio')
-    plt.gca().get_yaxis().get_major_formatter().set_scientific(False)
-    mpld3.plot()
+    years.sort()
+    promedios = []
+    # Promedio de precios de carros por año
+    for year in years:
+        promedio = 0
+        i=0
+        for carro in carros:
+            if int(carro.year) == year:
+                promedio += int(carro.precio)
+                i += 1
+        if(i != 0):
+            promedios.append(promedio/i)
+    return tuple(OrderedDict.fromkeys(years).keys()), tuple(OrderedDict.fromkeys(promedios).keys())
+
+def carrosPorLocalidad(carros):
+    carros.sort(key=lambda x: x.ciudad, reverse=False)
+    ciudades = [carro.ciudad for carro in carros]
+    cantidad = []
+    for ciudad in ciudades:
+        cantidad.append(ciudades.count(ciudad))
+    return tuple(OrderedDict.fromkeys(ciudades).keys()), tuple(OrderedDict.fromkeys(cantidad).keys())
+
