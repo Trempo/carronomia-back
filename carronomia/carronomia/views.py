@@ -13,19 +13,21 @@ def scrape(request, busqueda):
     return HttpResponse(carros_dto, 'application/json')
 
 
-def stats(request, busqueda):
+def stats(request, busqueda,year):
     carros = utils.scrape(busqueda)
-    years, promedios = utils.promedioPreciosAnual(carros)
+    years, promedios, kms, prediccion = utils.promedioAnual(carros, year)
     localidades, numero = utils.carrosPorLocalidad(carros)
     respuesta = {
         'promedioAnual': {
             'years': years,
             'promedios': promedios,
+            'kms': kms
         },
         'numeroPorLocalidad': {
             'localidad': localidades,
             'numero': numero
-        }
+        },
+        'prediccion': prediccion[0],
 
     }
     return HttpResponse(json.dumps(respuesta, indent=4), 'application/json')

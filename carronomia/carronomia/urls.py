@@ -10,6 +10,6 @@ from . import views, settings
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('<str:busqueda>/', views.scrape, name='scrape'),
-    path('<str:busqueda>/stats/', views.stats, name='promedio'),
+    path('<str:busqueda>/<int:year>/stats/', views.stats, name='promedio'),
 
 ]
